@@ -16,3 +16,12 @@
     /* 柠檬黄绿 */
     /* background-image: linear-gradient(to top, #F9F871 0%, #8BC34A 100%); */
 }
+
+#footer {
+    /* 与背景渐变效果一致*/
+    background-image: linear-gradient(-225deg, #d6badf 0%, #B8DCFF 28%, #58abf3 100%);
+}
+
+#footer:before {
+    background-color: rgba(0, 0, 0, 0);
+}
