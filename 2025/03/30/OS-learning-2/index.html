@@ -1,0 +1,933 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>王道OS看书笔记——内存管理 | shingeki的博客</title><meta name="author" content="shingeki"><meta name="copyright" content="shingeki"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="本文为我考研期间看王道书时写的飞书笔记，根据各知识点的逻辑关系进行整理，添加了一点自己的理解，内容不如王道书全。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="王道OS看书笔记——内存管理">
+<meta property="og:url" content="https://youzhoujimrliu.github.io/2025/03/30/OS-learning-2/index.html">
+<meta property="og:site_name" content="shingeki的博客">
+<meta property="og:description" content="本文为我考研期间看王道书时写的飞书笔记，根据各知识点的逻辑关系进行整理，添加了一点自己的理解，内容不如王道书全。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://youzhoujimrliu.github.io/img/asuka.jpg">
+<meta property="article:published_time" content="2025-03-30T07:08:48.000Z">
+<meta property="article:modified_time" content="2025-03-30T08:06:07.912Z">
+<meta property="article:author" content="shingeki">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://youzhoujimrliu.github.io/img/asuka.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "王道OS看书笔记——内存管理",
+  "url": "https://youzhoujimrliu.github.io/2025/03/30/OS-learning-2/",
+  "image": "https://youzhoujimrliu.github.io/img/asuka.jpg",
+  "datePublished": "2025-03-30T07:08:48.000Z",
+  "dateModified": "2025-03-30T08:06:07.912Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "shingeki",
+      "url": "https://youzhoujimrliu.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://youzhoujimrliu.github.io/2025/03/30/OS-learning-2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '王道OS看书笔记——内存管理',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(9deg, rgba(122,167,255,0.8487044475993523) 10%, rgba(107,9,121,0.7394607501203607) 65%, rgba(255,163,0,0.5209733551623774) 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/asuka.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/eva.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">shingeki的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">王道OS看书笔记——内存管理</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">王道OS看书笔记——内存管理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-30T07:08:48.000Z" title="发表于 2025-03-30 15:08:48">2025-03-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-30T08:06:07.912Z" title="更新于 2025-03-30 16:06:07">2025-03-30</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>本文为我考研期间看王道书时写的飞书笔记，根据各知识点的逻辑关系进行整理，添加了一点自己的理解，内容不如王道书全。</p>
+<h2 id="内存管理概念"><a href="#内存管理概念" class="headerlink" title="内存管理概念"></a>内存管理概念</h2><h3 id="内存管理的基本原理和要求"><a href="#内存管理的基本原理和要求" class="headerlink" title="内存管理的基本原理和要求"></a>内存管理<strong>的基本原理和要求</strong></h3><ul>
+<li><p><strong>程序的链接和装入（11）</strong></p>
+<ul>
+<li>创建进程首先要将程序和数据装入内存，将用户源程序变成可在内存中执行的程序。</li>
+<li><strong>编译</strong><ul>
+<li>编译程序将用户源代码编译成若干目标模块</li>
+</ul>
+</li>
+<li><strong>链接</strong><ul>
+<li>链接程序将编译后的目标模块以及它们所需的库函数链接在一起，形成完整装入模块</li>
+<li><strong>三种链接方式（链接时间不同）：</strong><ul>
+<li><strong>静态链接</strong><ul>
+<li>运行之前将目标模块和库函数链接，以后不再拆开。</li>
+<li>需要修改相对地址、变换外部调用符号为相对地址<ul>
+<li>GPT: 外部调用符号（external symbol）是指在一个目标文件（object file）中声明或引用的，但定义在另一个目标文件中的符号。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>装入时动态链接</strong><ul>
+<li>装入内存时，边装入边链接。</li>
+<li>**优点：**便于修改和更新，便于实现对目标模块的共享</li>
+</ul>
+</li>
+<li><strong>运行时动态链接</strong><ul>
+<li>程序执行中需要某目标模块时才链接。</li>
+<li>**优点：**加快程序装入过程，节省内存。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>装入</strong><ul>
+<li>装入程序将装入模块放入内存运行</li>
+<li><strong>三种方式：</strong><ul>
+<li><strong>绝对装入</strong><ul>
+<li>只适用于<strong>单道程序环境</strong></li>
+<li>编译时若知道程序在内存中的位置，则编译产生绝对地址的目标代码</li>
+<li>装入程序按照装入模块的地址将程序和数据装入内存</li>
+</ul>
+</li>
+<li><strong>可重定位装入（静态重定位）</strong><ul>
+<li>编译、链接后的装入模块的起始地址通常从 0 开始</li>
+<li>程序中指令和数据地址都相对于起始地址，此时应该用可重定位装入</li>
+<li><strong>重定位</strong>：装入时对目标程序中的相对地址的修改过程</li>
+<li>作业装入内存时必须分配要求的全部内存，且运行期间不能在内存中移动或继续申请空间</li>
+</ul>
+</li>
+<li><strong>动态运行时装入（动态重定位）</strong><ul>
+<li>地址转换推迟到程序执行时</li>
+<li>装入内存后的所有地址都是相对地址</li>
+<li>需要重定位寄存器存放装入模块的起始位置</li>
+<li><strong>优点：</strong><ul>
+<li>将程序分配到不连续的存储区</li>
+<li>只需要装入部分代码就可以投入运行</li>
+<li>便于程序段共享</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>逻辑地址和物理地址（23）</strong></p>
+<ul>
+<li><strong>逻辑地址</strong><ul>
+<li>编译后，每个目标模块都从 0 号单元开始编址，称为目标模块的<strong>相对地址（或逻辑地址）</strong></li>
+<li>各模块链接时，链接程序顺序依次按隔各个模块的相对地址构成<strong>统一的</strong>从 0 号单元开始编制的逻辑地址空间（或虚拟地址空间），对于 32 位系统，逻辑地址空间的范围为 0 ~ 2^32 - 1。<ul>
+<li>GPT: 链接程序会将所有这些模块的相对地址整合成一个从 0 号单元开始的统一逻辑地址空间。在这个过程中，链接器会把各个模块的相对地址重新映射为全局的逻辑地址，确保它们在一个连续的逻辑地址空间中排列。</li>
+</ul>
+</li>
+<li>进程运行时，<strong>看到的和使用的都是逻辑地址</strong>。</li>
+<li><strong>用户程序和程序员只需知道逻辑地址</strong>，内存管理的具体机制是透明的（注意透明含义）。</li>
+<li><strong>不同进程可以有相同的逻辑地址</strong>，因为这些地址实际映射到主存的不同位置。</li>
+</ul>
+</li>
+<li><strong>物理地址</strong><ul>
+<li>物理地址空间是内存中物理单元的集合。</li>
+</ul>
+</li>
+<li>OS 通过内存管理部件（MMU）将进程使用的逻辑地址转化为物理地址。</li>
+<li>逻辑地址通过页表映射到物理内存，页表由 OS 维护并被处理器引用。</li>
+</ul>
+</li>
+<li><p><strong>进程的内存映像</strong></p>
+<ul>
+<li>分为**代码段 数据段 PCB 堆 栈 **等等</li>
+<li>代码段和数据段在程序调入内存时就指定大小</li>
+<li>调用 malloc 或 free 这样的函数时，堆会变化</li>
+<li>调用函数或从函数返回，栈会变化</li>
+</ul>
+</li>
+<li><p><strong>内存保护（09）</strong></p>
+<ul>
+<li>内存保护是确保每个进程有单独的内存空间，OS 和用户进程、用户进程之间互不干扰。</li>
+<li><strong>两种方法：</strong><ul>
+<li>在 CPU 设置一堆上下限寄存器，存放用户进程在主存中的上限和下限地址，CPU 访问地址时与寄存器对比确认是否越界。</li>
+<li>采用重定位寄存器（基地址寄存器）和界地址寄存器（限长寄存器）进行越界检查。重定位寄存器存放进程起始物理地址，界地址寄存器存放进程最大逻辑地址。<ul>
+<li>这两个寄存器的加载必须使用特权指令。内核可以对它们进行修改，用户程序不可以。<br><img src="/2025/03/30/OS-learning-2/1.jpg"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>内存共享</strong></p>
+<ul>
+<li><strong>只读</strong>的区域才可以共享。</li>
+</ul>
+</li>
+<li><p><strong>内存分配和回收</strong></p>
+<ul>
+<li>页式存储管理 分段存储管理</li>
+</ul>
+</li>
+</ul>
+<h3 id="连续分配管理方式"><a href="#连续分配管理方式" class="headerlink" title="连续分配管理方式"></a>连续分配管理方式</h3><ul>
+<li><p><strong>单一连续分配</strong></p>
+<ul>
+<li>内存分为系统区和用户区，系统区仅供 OS 使用，用户区仅有一道用户程序</li>
+<li>简单，无外部碎片</li>
+<li>单用户 单任务</li>
+<li>有内部碎片（分区内部的碎片）</li>
+<li>存储器利用率极低</li>
+</ul>
+</li>
+<li><p><strong>固定分区分配</strong></p>
+<ul>
+<li>用户内存空间划分为若干固定大小的分区，每个分区只装入一道作业。</li>
+<li>有空闲分区时，从外存的后备作业队列选择适当大小的作业装入该分区。</li>
+<li>分区划分大小可以相等，可以不等。</li>
+<li>建立<strong>分区使用表</strong>，便于分配和回收。<br><img src="/2025/03/30/OS-learning-2/2.jpg"></li>
+</ul>
+</li>
+<li><p><strong>动态分区分配（可变分区分配）（10 17 19 24）</strong></p>
+<ul>
+<li><p>进程装入内存时，根据实际需要，动态地分配内存，使大小<strong>正好符合进程需要</strong>。</p>
+</li>
+<li><p>随着时间推移，会产生小内存块**（外部碎片，存在于所有分区的外部）**，内存利用率下降。</p>
+</li>
+<li><p>外部碎片可以通过<strong>紧凑技术</strong>克服，即 OS 不时地对进程进行移动和整理，但需要动态重定位寄存器的支持，且比较费时。</p>
+</li>
+<li><p><strong>内存分配和回收方法</strong></p>
+<ul>
+<li><p>设置一张<strong>空闲分区链（表）</strong>，可以按起始地址排序</p>
+</li>
+<li><p>分配时，检索空闲分区链，找到所需分区：</p>
+<ul>
+<li>若分区大小大于请求大小，则从该分区中<strong>按请求大小分割</strong>一块空间给装入进程（若剩余部分过小，则不需要分割），余下部分仍在空闲分区链中。</li>
+</ul>
+</li>
+<li><p>回收时，根据回收分区的起始地址，从空闲分区链中找到相应插入点，如果回收区和其他空闲分区<strong>相邻，则合并</strong>，最多三块合并。如果没有空闲分区相邻，则不合并。</p>
+</li>
+<li><p><strong>分配算法</strong></p>
+<ul>
+<li><p>作业装入主存时，需要以分配算法从空闲分区链中选出一个分区。</p>
+</li>
+<li><p><strong>顺序分配算法</strong></p>
+<ul>
+<li>依次搜索空闲分区链上的空闲分区，寻找大小合适的分区，有 4 种</li>
+</ul>
+<ol>
+<li><strong>首次适应（First Fit）算法</strong><ul>
+<li>空闲分区按<strong>地址递增次序</strong>排列。</li>
+<li>顺序查找第一个满足大小的分区。</li>
+<li>保留了高地址的大空闲分区，<strong>有利于大作业的装入</strong></li>
+<li>低地址部分出现小碎片，而每次分配查找时都会经过这些分区，<strong>增加开销</strong></li>
+</ul>
+</li>
+<li><strong>邻近适应（Next Fit）算法（循环首次适应算法）</strong><ul>
+<li>其他与首次适应类似，但分配内存时从上次查找结束的位置开始。</li>
+<li>低地址和高地址同等概率被分配</li>
+<li>高地址没有大空闲分区可用</li>
+</ul>
+</li>
+<li><strong>最佳适应（Best Fit）算法</strong><ul>
+<li>空闲分区按<strong>容量递增次序</strong>排列。</li>
+<li>每次分配，顺序查找第一个满足大小的空闲分区，也就是最小的适合的空闲分区</li>
+<li>分配后需要重新排序</li>
+<li>能够更多留下大空闲分区</li>
+<li>每次分配会留下很多小的难以利用的内存块，<strong>产生最多的外部碎片</strong>，性能差。</li>
+</ul>
+</li>
+<li><strong>最坏适应（Worst Fit）算法</strong><ul>
+<li>空闲分区按<strong>容量递减次序</strong>排列。</li>
+<li>每次分配，顺序查找第一个满足大小的空闲分区，也就是最大的空闲分区，分割一部分给作业</li>
+<li>分配后需要重新排序</li>
+<li>划分大空间会导致没有大空间可用，性能差</li>
+</ul>
+</li>
+</ol>
+<ul>
+<li><strong>首次适应算法开销小，性能最好，且分配后不需要重新排序。</strong></li>
+</ul>
+</li>
+<li><p><strong>索引搜索算法</strong></p>
+<ul>
+<li>根据大小对空闲分区分类，每类空闲分区单独设链表</li>
+<li>设置索引表管理这些链表</li>
+<li>分配时，在索引表中查找对应所需空间大小的表项，得到链表头指针，从而获得空闲分区</li>
+<li>大中系统常用</li>
+</ul>
+<ol>
+<li><strong>快速适应算法</strong><ul>
+<li>空闲分区的分类根据<strong>进程常用的空间大小</strong>。</li>
+<li>分配时，首先根据进程长度，在索引表中找到能容纳的最小空闲分区链</li>
+<li>然后从链表中<strong>取出第一块</strong>进行分配</li>
+<li><strong>查找效率高，不产生内部碎片</strong></li>
+<li><strong>回收分区</strong>时，需要有效地<strong>合并分区，算法复杂，开销大</strong>。</li>
+</ul>
+</li>
+<li><strong>伙伴系统（24）</strong><ul>
+<li>规定所有分区的大小为 2 的 k 次幂，分配时寻找能容纳的最小空闲分区链</li>
+<li>如果找到（ 2^i ），则分配；如果找不到，到大小为两倍的空闲分区链中查找</li>
+<li>如果存在，则将其等分，称为<strong>一对伙伴</strong>，一个用于分配，另一个加入大小 2^i 的链表中</li>
+<li>若仍不存在，则继续查找，直到找到为止</li>
+<li>回收时，可能需要对伙伴分区进行合并</li>
+</ul>
+</li>
+<li><strong>哈希算法</strong><ul>
+<li>根据空闲分区链的分布规律，建立哈希函数，构建以空闲分区大小为关键字的哈希表</li>
+<li>每个表项记录一个对应空闲分区链的头指针</li>
+<li>分配时，根据所需大小，通过哈希函数计算得到哈希表中位置，然后得到链表</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>对于单一分区分配、固定分区分配和动态分区分配，用户程序在主存中都是连续存放的。</strong></p>
+</li>
+</ul>
+<h3 id="基本分页存储管理"><a href="#基本分页存储管理" class="headerlink" title="基本分页存储管理"></a>基本分页存储管理</h3><p>内存空间分为若干固定大小的分区，称为<strong>页框、页帧或物理块</strong></p>
+<p>进程的逻辑地址空间也分为与块<strong>大小相等</strong>的若干区域，称为<strong>页或页面</strong></p>
+<p>分页管理不产生外部碎片。</p>
+<p>进程只有为最后一个不完整的块申请主存块空间时，才会产生内部碎片。</p>
+<p>每个进程平均产生半个块大小的内部碎片</p>
+<ul>
+<li><p><strong>分页存储的基本概念</strong></p>
+<ul>
+<li>进程的逻辑地址空间每个页面有一个编号，称为<strong>页号</strong>，从 0 开始</li>
+<li>内存空间的每个页框也有编号，称为<strong>页框号（物理块号）</strong>，也从 0 开始</li>
+<li>页面大小为 2 的整数次幂，页面太小会使进程页面数过多，页表过长，占用大量内存，也会增加硬件地址转换的开销，降低页面换入&#x2F;换出的效率</li>
+<li>页面过大会使页内碎片增多，降低内存利用率</li>
+<li><strong>分页系统的逻辑地址结构（09 10 13 15 17）</strong><br><img src="/2025/03/30/OS-learning-2/3.jpg"></li>
+<li>系统为每个进程建立一张<strong>页面映射表，简称页表</strong><ul>
+<li>进程每个页面对应一个<strong>页表项</strong></li>
+<li>每个<strong>页表项</strong>由<strong>页号</strong>和<strong>块号</strong>组成，记录了页面在内存中的物理块号</li>
+<li>页表项连续存放，因此<strong>页号可以隐含</strong>，不占空间</li>
+<li>进程执行时，通过查找页表就能找到每页在内存中的物理块号<br><img src="/2025/03/30/OS-learning-2/4.jpg"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>基本地址变换机构（13 21 24）</strong></p>
+<ul>
+<li>地址变换机构的任务是将逻辑地址转换为物理地址。是借助页表实现的。<br><img src="/2025/03/30/OS-learning-2/5.jpg"></li>
+<li>为提高地址变换的速度，在系统中设置一个页表寄存器，存放页表<strong>在内存的起始地址</strong>和<strong>页表长度</strong>。</li>
+<li>进程未执行时，页表起始地址和长度存放在本进程的 PCB 中</li>
+<li>进程被调度执行时，将这两样装入页表寄存器</li>
+<li><strong>页式系统的地址变换过程</strong><ol>
+<li>设页面大小为$L$ 逻辑地址$A$ 物理地址$E$ 页表起始地址 $F$ 页表长度 $M$</li>
+<li>页号 $P&#x3D;A&#x2F;L$ , 页内偏移量 $W&#x3D;A%L$</li>
+<li>判断是否页号是否越界。若页号 $P$ &gt;&#x3D; 页表长度 $M$，则产生越界中断</li>
+<li>在页表中查询页号对应页表项，确定页面存放的物理块号。<ul>
+<li>$P$ 对应的<strong>页表项地址</strong> &#x3D; $F$ + $P$ * 页表项长度</li>
+<li>取出物理块号 $b$</li>
+</ul>
+</li>
+<li>计算物理地址 $E&#x3D;b×L+W$</li>
+</ol>
+</li>
+<li>存在的主要问题<ul>
+<li>每次访存都需要进行逻辑地址到物理地址的转换，地址转换必须足够快</li>
+<li>每个进程引入页表，用于存储映射机制，页表不能太大，否则内存利用率降低</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>具有快表的地址变换机构（09）</strong></p>
+<ul>
+<li>上述地址变换过程，页表在内存中，需要两次访存</li>
+<li>增设一个具有并行查找能力的高速缓冲存储器<strong>快表（TLB）（相联存储器），在 CPU 中</strong><ul>
+<li>快表中存放当前访问的若干<strong>页表项</strong><br><img src="/2025/03/30/OS-learning-2/6.jpg"></li>
+</ul>
+</li>
+<li><strong>地址变换过程</strong><ul>
+<li>CPU 给出逻辑地址，硬件进行地址转换，将页号与快表中所有页号进行比较</li>
+<li>如果有匹配的页号，直接读页框号，得到物理地址</li>
+<li>如果没有，则访问主存中页表，并将页表项存入快表。若快表已满，则按一定算法淘汰一个旧页表项。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>两级页表（10 13 14 15 17 18 19 21）</strong></p>
+<ul>
+<li>页表会占用连续的很大的空间，故引入多级页表</li>
+<li>页表离散分配，为这些页表再建立一张页表，称为<strong>外层页表（页目录）</strong></li>
+<li>以 32 位系统 4KB 页面大小为例<br><img src="/2025/03/30/OS-learning-2/7.jpg"></li>
+<li><strong>两级页表的结构</strong><br><img src="/2025/03/30/OS-learning-2/8.jpg"></li>
+<li><strong>地址变换过程</strong><ul>
+<li>增设一个**外层页表寄存器（页目录基址寄存器），**存放页目录起始地址</li>
+<li>将逻辑地址中页目录号作为页目录索引，找到页表起始地址</li>
+<li>用二级页号作为页表索引，找到页表项</li>
+<li>将页表项中物理块号和页内偏移拼接得到物理地址</li>
+<li>共三次访存</li>
+</ul>
+</li>
+<li>多级页表解决了逻辑地址空间过大时，页表长度大大增加的问题</li>
+<li>一次访盘需要多次访问内存甚至磁盘，大大增加一次访存的时间</li>
+<li>注意第二级页表的大小最大为 1 页（理解：第一级页表也是页表，所指向的区域一定是一页大小）</li>
+</ul>
+</li>
+</ul>
+<h3 id="基本分段存储管理"><a href="#基本分段存储管理" class="headerlink" title="基本分段存储管理"></a>基本分段存储管理</h3><p><strong>分页</strong>通过<strong>硬件机制</strong>实现，对用户透明</p>
+<p><strong>分段</strong>管理考虑了<strong>用户和程序员</strong>，满足编程、信息保护和共享等需要</p>
+<ul>
+<li><p><strong>分段（09）</strong></p>
+<ul>
+<li>分段系统将用户进程的逻辑地址空间分为大小不等的段</li>
+<li>比如用户程序由 主程序段 两个子程序段 栈段 数据段 组成<ul>
+<li>将进程划分为 5 段，<strong>每段从 0 开始编址</strong></li>
+<li><strong>段内地址连续</strong>，段间不要求连续<br><img src="/2025/03/30/OS-learning-2/9.jpg"></li>
+</ul>
+</li>
+<li>段号和段内偏移量由用户显式提供（section .data ？）。高级语言中编译器完成这部分工作。</li>
+</ul>
+</li>
+<li><p><strong>段表（16）</strong></p>
+<ul>
+<li><p><strong>每个进程</strong>都有一张逻辑空间和内存空间映射的<strong>段表</strong>，进程中每个段对应一个段表项</p>
+<table>
+<tr>
+    <td>段号<br/></td>
+    <td>段长<br/></td>
+    <td>本段在主存的起始地址<br/></td>
+</tr>
+</table>
+</li>
+<li><p>执行中的进程可以查找段表，找到每段对应的内存区<br><img src="/2025/03/30/OS-learning-2/10.jpg"></p>
+</li>
+<li><p><strong>地址变换机构</strong></p>
+<ul>
+<li>在系统中设置一个段表寄存器，存放段表起始地址 $F$ 和段表长度 $M$</li>
+<li>从逻辑地址 $A$到物理地址 $E$的转换过程：<ul>
+<li>从逻辑地址中取出前几位段号 $S$，后几位段内偏移量 $W$</li>
+<li>判断段号是否越界。若 $S≥M$，则产生越界中断</li>
+<li>在段表中查询段号对应段表项， $S$对应的**段表项地址 **&#x3D; $F$ + $S$× 段表项长度</li>
+<li>取出段表项中的段长 $C$，若 $W≥C$，则产生越界中断</li>
+<li>取出段表项中该段起始地址 $b$，物理地址 $E&#x3D;b+W$</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>分页和分段的对比</strong></p>
+<ul>
+<li>页是信息的物理单位，目的是提高内存利用率；段是信息的逻辑单位，目的是更好地满足用户需求</li>
+<li>分页对用户不可见，分段对用户可见</li>
+<li>页的大小固定，段的大小不固定</li>
+<li><strong>分页管理的地址空间是一维</strong>的，而<strong>分段管理</strong>因为每段长度不固定，无法根据一个数得到物理地址，需要显式给出段号和段内偏移，因此是<strong>二维</strong>的。</li>
+</ul>
+</li>
+<li><p><strong>段的共享和保护（19 23）</strong></p>
+<ul>
+<li>分页系统中，可以实现共享，但不方便<ul>
+<li>若被共享的代码占 N 个页框，则每个进程的页表中都要建立 N 个页表项，指向被共享的页框</li>
+</ul>
+</li>
+<li>分段系统中，在<strong>每个进程的段表</strong>中设置一个段表项，指向被共享的物理段</li>
+<li>不能被任何进程修改的代码称为<strong>可重入代码</strong>或者<strong>纯代码</strong><ul>
+<li>这种代码允许多个进程同时访问</li>
+<li>为了防止程序执行时修改共享代码，每个进程中配备局部数据区，将可能改变的部分复制到数据区修改</li>
+</ul>
+</li>
+<li><strong>分段管理的保护</strong><ul>
+<li>存取控制保护（GPT: 权限控制）</li>
+<li>地址越界保护<ul>
+<li>段表寄存器中的段表长度和逻辑地址中段号比较，段号更大则产生越界中断</li>
+<li>段表项中段长和逻辑地址中的段内偏移比较，段内偏移更大则产生越界中断</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="段页式存储管理"><a href="#段页式存储管理" class="headerlink" title="段页式存储管理"></a>段页式存储管理</h3><p>进程的地址空间分为若干逻辑段，每段有自己段号，将各段分为若干大小固定的页。</p>
+<p>对内存空间的管理和分页管理一样，分为若干和页面大小一致的存储块，内存分配以存储块为单位。</p>
+<p><img src="/2025/03/30/OS-learning-2/11.jpg"></p>
+<p>段页式系统中的逻辑地址分为<strong>段号 页号和页内偏移量</strong></p>
+<p>系统为<strong>每个进程建立一张段表</strong>，每个段对应一个段表项，每个段表项包括<strong>段号 页表长度 页表起始地址</strong></p>
+<p><strong>每个段有一张页表</strong>，页表项包括页号和块号</p>
+<p>每个进程段表只有一个，页表可能有多个</p>
+<p>系统中有一个<strong>段表寄存器</strong>，指出进程的段表起始地址和段表长度</p>
+<p>段表寄存器和页表寄存器的作用都是在页表或段表中寻址以及判断是否越界。</p>
+<p>地址变换时，首先用段表查到页表起始地址，然后通过页表找到物理块号，形成物理地址。</p>
+<p>该过程需要三次访问主存</p>
+<p>此处也可以使用快表</p>
+<p><img src="/2025/03/30/OS-learning-2/12.jpg"></p>
+<h2 id="虚拟内存管理"><a href="#虚拟内存管理" class="headerlink" title="虚拟内存管理"></a>虚拟内存管理</h2><h3 id="虚拟内存的基本概念"><a href="#虚拟内存的基本概念" class="headerlink" title="虚拟内存的基本概念"></a>虚拟内存的基本概念</h3><ul>
+<li><p><strong>传统存储管理方式的特征</strong></p>
+<ul>
+<li><strong>一次性</strong>。作业必须一次性装入内存才能运行。<ul>
+<li>当作业很大不能全部装入时，无法运行</li>
+<li>大量作业要求运行时，内存不足以容纳所有作业，只能少数先运行，导致并发下降</li>
+</ul>
+</li>
+<li>**驻留性。**作业装入内存后，一直驻留在内存中，任何部分都不会被换出，直到作业运行结束。<ul>
+<li>运行中的进程会因为等待 I&#x2F;O 而被阻塞，可能处于长期等待状态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>局部性原理（12）</strong></p>
+<ul>
+<li><strong>时间局部性</strong><ul>
+<li>程序的某条指令一旦执行，不久后可能再次执行；某数据被访问后，不久后可能再次被访问。</li>
+<li>原因是程序中存在大量循环</li>
+</ul>
+</li>
+<li><strong>空间局部性</strong><ul>
+<li>一旦程序访问了某个存储单元，不久后其附近的存储单元也会被访问</li>
+<li>原因是指令是顺序存放、顺序执行的，数据也一般是向量、数组、表等形式存储的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>虚拟存储器的定义和特征（12）</strong></p>
+<ul>
+<li>基于局部性原理，程序装入时，只需将当前运行所需少数页面或段装入内存，其余暂留外存，便可执行。</li>
+<li><strong>请求调页（请求调段）</strong>：访问的信息不在内存时，OS 将所需信息调入内存，然后继续执行。</li>
+<li><strong>页面置换（段置换）</strong>：内存不够时，OS 将内存中暂时用不到的信息换出到外存</li>
+<li>通过这些操作，系统好像提供了一个比实际物理内存大得多的存储器，称为<strong>虚拟存储器</strong></li>
+</ul>
+</li>
+<li><p><strong>虚拟内存技术的实现</strong></p>
+<ul>
+<li>三种方式：<ul>
+<li>请求分页存储管理</li>
+<li>请求分段存储管理</li>
+<li>请求段页式存储管理</li>
+</ul>
+</li>
+<li>硬件支持：<ul>
+<li>一定容量内存外存</li>
+<li>页表（或段表）机制</li>
+<li>中断机构，当用户访问部分未进入内存时，产生中断</li>
+<li>地址变换机构，从逻辑地址到物理地址</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="请求分页管理方式"><a href="#请求分页管理方式" class="headerlink" title="请求分页管理方式"></a>请求分页管理方式</h3><ul>
+<li><p><strong>页表机制</strong></p>
+<ul>
+<li>请求页表项相比之前的页表项，增加了四个字段。</li>
+<li><strong>状态位</strong> $P$，标记该页是否已经调入内存，供程序访问时参考</li>
+<li><strong>访问字段</strong> $A$ ，记录本页在一段时间内被访问的次数，或者记录本页最近有多久未被访问</li>
+<li><strong>修改位</strong> $M$，标记该页在调入内存后是否被修改过，以决定换出时是否写回外存</li>
+<li><strong>外存地址</strong>，记录该页在外存的存放地址，通常是物理块号，供调入该页时参考</li>
+</ul>
+</li>
+<li><p><strong>缺页中断机构（11 13 14 20 22 23）</strong></p>
+<ul>
+<li>访问的页面不在内存时，产生<strong>缺页中断</strong>，请求 OS 的缺页中断处理程序处理。</li>
+<li>缺页的进程阻塞，调页完成后再唤醒。</li>
+<li>如果内存中有空闲页框，则为进程分配一个页框，将所缺页面从外存装入页框，修改页表相应表项</li>
+<li>如果没有，则由页面置换算法选一个页面淘汰，若该页在内存期间被修改过，还要写回外存</li>
+<li>缺页中断与一般中断的区别：<ul>
+<li>指令执行期间而非一条指令执行完之后产生和处理中断，属于内部异常</li>
+<li>一条指令执行期间可能产生多次缺页中断</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>地址变换机构（09 10 14）</strong></p>
+<ul>
+<li>在基本分页系统地址变换机构的基础上，为了实现虚拟内存，增加了产生和处理缺页中断、从内存中换出一页的功能</li>
+<li><strong>过程：</strong><ul>
+<li>先检索快表<ul>
+<li>若命中，从相应表项中取出物理块号，修改页表中访问位。对于写指令，还要将修改位改为 1。</li>
+<li>若未命中，到页表中查找。<ul>
+<li>若找到，则从相应表项中取出物理块号，并将页表项写入快表。<ul>
+<li>若快表已满，采用某种算法替换。</li>
+</ul>
+</li>
+<li>若未找到，则进行缺页中断处理，请求系统将该页从外存换入内存，OS 更新页表和快表，得到物理块号</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>利用得到的物理块号和页内地址拼接得到物理地址<br><img src="/2025/03/30/OS-learning-2/13.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="页框分配"><a href="#页框分配" class="headerlink" title="页框分配"></a>页框分配</h3><ul>
+<li><p><strong>驻留集大小</strong></p>
+<ul>
+<li>不需要将进程的所有页都读入主存，需要 OS 决定分配几个页框</li>
+<li>分配的页框的集合就是这个进程的<strong>驻留集</strong></li>
+<li>驻留集越小，驻留在内存中进程越多，可以提高并发度，但缺页率提高，CPU 耗费大量时间处理缺页</li>
+<li>驻留集过大，对于缺页率改善不多，浪费内存，大幅降低并发度</li>
+</ul>
+</li>
+<li><p><strong>内存分配策略（15）</strong></p>
+<ul>
+<li>请求分页系统中 有固定和可变分配策略</li>
+<li>置换时有全局和局部置换</li>
+<li><strong>固定分配局部置换</strong><ul>
+<li>固定分配：分配固定数目物理块，进程运行期间不变</li>
+<li>局部置换是指如果发生缺页，只能从分配给该进程在内存中的页面选一页换出，再调入一页，保证分配的内存空间不变</li>
+<li>难以确定分配的数目，过少会频繁缺页，过多会降低 CPU 等利用率</li>
+</ul>
+</li>
+<li><strong>可变分配全局置换</strong><ul>
+<li>先分配一定数目物理块，可增加&#x2F;减少</li>
+<li>全局置换：若发生缺页，则从<strong>空闲物理块队列</strong>中取出一块分配给该进程，并将所缺页调入</li>
+<li>盲目给进程增加物理块，会导致并发能力下降</li>
+</ul>
+</li>
+<li><strong>可变分配局部置换</strong><ul>
+<li>分配一定数目物理块，缺页时只从<strong>该进程在内存中的页面</strong>换出，不影响其他进程</li>
+<li>如果频繁缺页，系统再分配若干物理块，直到缺页率适当</li>
+<li>若缺页率特别低，则减少分配</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>物理块调入算法</strong></p>
+<ul>
+<li>固定分配策略的空闲物理块分配算法<ul>
+<li>平均分配</li>
+<li>按进程大小比例</li>
+<li>按进程优先级</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>调入页面时机</strong></p>
+<ul>
+<li>预调页策略（运行前）<ul>
+<li>预测不久后可能被访问的页面，预先调入</li>
+<li>预测成功率不高</li>
+<li>主要用于进程首次调入</li>
+</ul>
+</li>
+<li>请求调页策略（运行后）<ul>
+<li>进程需要的页面不在内存，提出请求，系统调入。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>从何处调入页面</strong></p>
+<ul>
+<li>请求分页系统的外存分为<ul>
+<li>用于存放文件的文件区<ul>
+<li>离散分配方式</li>
+</ul>
+</li>
+<li>存放对换页面的对换区（交换区）<ul>
+<li>连续分配方式，I&#x2F;O 速度更快</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>三种情况：<ul>
+<li>系统有足够对换区空间<ul>
+<li>全部从对换区调页，提高速度。</li>
+<li>进程运行前需要将有关文件从文件区复制到对换区</li>
+</ul>
+</li>
+<li>系统没有足够对换区空间<ul>
+<li>不会被修改的文件从文件区调入</li>
+<li>可能被修改的部分 换出时必须放在对换区，需要时从对换区调入（因为读比写快）</li>
+</ul>
+</li>
+<li>UNIX 方式<ul>
+<li>进程有关文件都在文件区，因此未运行过的页面都应从文件区调入</li>
+<li>曾经运行过但被换出的页面，因为放在对换区，下次调入时应该从对换区调入</li>
+<li>进程请求的共享页面如果被其他进程调入内存，不再需要从对换区调入</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>如何调入</strong></p>
+<ul>
+<li>进程访问页面不在内存中（存在位&#x3D;0），发出缺页中断，转入缺页中断处理</li>
+<li>查表得到该页物理块<ul>
+<li>内存未满，启动磁盘 I&#x2F;O，将所缺页调入内存，修改页表</li>
+<li>内存已满，先按某种置换算法选出一页准备换出<ul>
+<li>若该页未被修改（修改位&#x3D;0），则不需要写回</li>
+<li>若修改位&#x3D;1，需要写回，然后将所缺页调入内存，修改页表</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h3><ul>
+<li><p><strong>最佳（OPT）置换算法</strong></p>
+<ul>
+<li>淘汰以后永不使用或者最长时间内不再被访问的页面</li>
+<li>无法实现</li>
+</ul>
+</li>
+<li><p><strong>先进先出（FIFO）置换算法（10 14）</strong></p>
+<ul>
+<li>淘汰最早进入内存的页面</li>
+<li>没有利用局部性原理 性能较差</li>
+<li>可能导致 <strong>Belady 异常</strong><ul>
+<li>为进程分配的物理块增多，缺页次数不减反增的现象</li>
+<li>GPT: 原因：这种算法的简单性可能导致一些正在频繁使用的页面被替换出内存，导致缺页率增加。</li>
+<li>只有 FIFO 算法会导致 Belady 异常，LRU 和 OPT 算法不会出现</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>最近最久未使用（Least Recently Used, LRU）置换算法（09 15 19）</strong></p>
+<ul>
+<li>淘汰最近最久未使用的页面</li>
+<li>为每个页面设置一个访问字段，记录页面自上次访问以来经历的时间<ul>
+<li>淘汰时选择值最大的页面</li>
+</ul>
+</li>
+<li><strong>性能较好</strong>，接近 OPT，但<strong>开销大</strong></li>
+<li>需要寄存器和栈的硬件支持</li>
+<li>LRU 是堆栈类算法，可以证明堆栈类算法不会出现 Belady 异常</li>
+</ul>
+</li>
+<li><p><strong>时钟（CLOCK）算法（10 12 16 18 21）</strong></p>
+<ul>
+<li><strong>简单的 CLOCK 置换算法</strong><ul>
+<li>每个页面设置一个<strong>访问位</strong><ul>
+<li>页面首次被装入或被访问时，访问位修改为 1</li>
+</ul>
+</li>
+<li>算法将内存中的页面链接成一个循环队列，并有一个替换指针与之相关联<ul>
+<li>指针顺序移动 初始指向第一个页</li>
+<li>指针只在选择要替换的页面的时候移动，如果没有发生缺页不会移动</li>
+<li>选择淘汰一页的时候，检查页面的<strong>访问位</strong><ul>
+<li>若为 1，改为 0</li>
+<li>若为 0，淘汰</li>
+</ul>
+</li>
+<li>当某一页被替换时，该指针指向<strong>被替换页面的下一页</strong></li>
+</ul>
+</li>
+<li>也称最近未用（NRU）算法</li>
+</ul>
+</li>
+<li><strong>改进 CLOCK 置换算法</strong><ul>
+<li>将页面换出的时候，若已被修改，需要写回磁盘，替换代价大</li>
+<li>与上一种相比，添加了一个修改位</li>
+<li>访问位 A 修改位 M<ul>
+<li>A &#x3D; 0, M &#x3D; 0 最佳淘汰页</li>
+<li>A &#x3D; 0, M &#x3D; 1 次佳淘汰页</li>
+<li>A &#x3D; 1, M &#x3D; 0 或 1 可能再次被访问</li>
+</ul>
+</li>
+<li><strong>算法执行过程</strong><ul>
+<li>与简单 CLOCK 相似</li>
+<li>从指针当前位置开始，扫描循环队列，寻找 A &#x3D; 0 M &#x3D; 0 的 1 类页面，将第一个 1 类页面作为淘汰页。<ul>
+<li>第一次扫描期间不改变访问位 A</li>
+</ul>
+</li>
+<li>若第一步失败，则进行第二轮扫描，寻找 A &#x3D; 0 M &#x3D; 1 的 2 类页面，将第一个 2 类页面作为淘汰页。<ul>
+<li>第二次扫描将所有扫描过的页面访问位改为 0</li>
+</ul>
+</li>
+<li>若第二步失败，则指针返回开始位置，将所有页面访问位设为 0。</li>
+<li>重复第一步，若有必要则重复第二步，一定能找到淘汰页。</li>
+</ul>
+</li>
+<li>比简单 CLOCK 减少磁盘 I&#x2F;O 次数，但实现算法本身开销可能增加</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="内存映射文件"><a href="#内存映射文件" class="headerlink" title="内存映射文件"></a>内存映射文件</h3><ul>
+<li><p>内存映射文件是 OS 提供的一个<strong>系统调用</strong></p>
+</li>
+<li><p>与虚拟内存相似，在磁盘文件和进程的虚拟地址空间之间建立映射</p>
+</li>
+<li><p>将一个文件映射到其虚拟地址空间的某个区域，之后用访问内存的方式读写文件</p>
+<ul>
+<li>将文件作为内存中一个大字符数组访问，比文件 I&#x2F;O 更便利</li>
+</ul>
+</li>
+<li><p>磁盘文件的读写由 OS 完成，对进程透明</p>
+</li>
+<li><p>退出或者关闭文件映射的时候，改动才写回磁盘</p>
+</li>
+<li><p>很多时候，<strong>共享内存</strong>是通过映射相同文件到通信进程的虚拟地址空间实现的</p>
+</li>
+<li><p>一个进程在共享内存上进行了写操作，另一个进程能立刻读到结果</p>
+</li>
+</ul>
+<p><img src="/2025/03/30/OS-learning-2/14.png"></p>
+<h3 id="虚拟存储器性能影响因素（20-22）"><a href="#虚拟存储器性能影响因素（20-22）" class="headerlink" title="虚拟存储器性能影响因素（20 22）"></a>虚拟存储器性能影响因素（20 22）</h3><ul>
+<li>缺页率是影响虚拟存储器性能的主要因素<ul>
+<li>缺页率又受到页面大小 分配的物理块数 页面置换算法 程序编制方法的影响</li>
+<li>页面较大，缺页率较低；页面较小，减少内存碎片，提高内存利用率</li>
+<li>分配给进程物理块越多，缺页率越低，但超过某个数目时，对缺页率降低不明显</li>
+<li>LRU CLOCK 等置换算法缺页率低</li>
+<li>编写程序的局部化程度越高，缺页率越低<ul>
+<li>若存储按行，访问时就要尽量采用相同方式</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</article><div class="tag_share"><div class="post-share"><div class="social-share" data-image="/img/asuka.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/03/30/OS-learning-1/" title="王道OS看书笔记——进程与线程"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">王道OS看书笔记——进程与线程</div></div><div class="info-2"><div class="info-item-1">本文为我考研期间看王道书时写的飞书笔记，根据各知识点的逻辑关系进行整理，添加了一点自己的理解，内容不如王道书全。</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/asuka.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">shingeki</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">0</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%A6%82%E5%BF%B5"><span class="toc-number">1.</span> <span class="toc-text">内存管理概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86%E5%92%8C%E8%A6%81%E6%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">内存管理的基本原理和要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E7%BB%AD%E5%88%86%E9%85%8D%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">连续分配管理方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E9%A1%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">基本分页存储管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9F%BA%E6%9C%AC%E5%88%86%E6%AE%B5%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-number">1.4.</span> <span class="toc-text">基本分段存储管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F%E5%AD%98%E5%82%A8%E7%AE%A1%E7%90%86"><span class="toc-number">1.5.</span> <span class="toc-text">段页式存储管理</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">虚拟内存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">2.1.</span> <span class="toc-text">虚拟内存的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%88%86%E9%A1%B5%E7%AE%A1%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-number">2.2.</span> <span class="toc-text">请求分页管理方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E6%A1%86%E5%88%86%E9%85%8D"><span class="toc-number">2.3.</span> <span class="toc-text">页框分配</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="toc-number">2.4.</span> <span class="toc-text">页面置换算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6"><span class="toc-number">2.5.</span> <span class="toc-text">内存映射文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8%E6%80%A7%E8%83%BD%E5%BD%B1%E5%93%8D%E5%9B%A0%E7%B4%A0%EF%BC%8820-22%EF%BC%89"><span class="toc-number">2.6.</span> <span class="toc-text">虚拟存储器性能影响因素（20 22）</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/30/OS-learning-2/" title="王道OS看书笔记——内存管理">王道OS看书笔记——内存管理</a><time datetime="2025-03-30T07:08:48.000Z" title="发表于 2025-03-30 15:08:48">2025-03-30</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/30/OS-learning-1/" title="王道OS看书笔记——进程与线程">王道OS看书笔记——进程与线程</a><time datetime="2025-03-30T06:06:19.000Z" title="发表于 2025-03-30 14:06:19">2025-03-30</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div id="footer-wrap"><div class="copyright">&copy;2025 By shingeki</div><div class="footer_custom_text">Powered by Hexo & Butterfly.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
