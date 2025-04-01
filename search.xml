@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>butterfly主题使用踩坑记录</title>
+      <link href="/2025/04/02/butterfly-learning/"/>
+      <url>/2025/04/02/butterfly-learning/</url>
+      
+        <content type="html"><![CDATA[<h2 id="一"><a href="#一" class="headerlink" title="一"></a>一</h2><p>将_config.yml中的post_asset_folder项设为true，安装hexo-asset-image之后，运行hexo new post的时候会新建一个同名文件夹，在里面可以直接引用图片。比如cover配置项就可以使用这个文件夹里面的图片，直接在文章的front matter里面写</p><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">cover:</span> <span class="string">xxx.jpg</span></span><br></pre></td></tr></table></figure><p>即可，图片能够正常显示。</p><p><img src="/2025/04/02/butterfly-learning/1.png"></p><p>根据官方文档的说法，文章页顶部图的获取顺序为各自配置的 top_img &gt; cover &gt; 配置文件的 default_top_img，目前我没有配置top_img的情况下，应该取cover作为顶部图片，但实际上并非如此：</p><p>但top_img不可以，只能引用butterfly的source里面的文件。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 经验总结 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> butterfly </tag>
+            
+            <tag> 主题 </tag>
+            
+            <tag> hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>王道OS看书笔记——I/O管理</title>
       <link href="/2025/03/31/OS-learning-4/"/>
       <url>/2025/03/31/OS-learning-4/</url>
