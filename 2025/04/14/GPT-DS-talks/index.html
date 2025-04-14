@@ -1,0 +1,277 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>GPT和DeepSeek的天才回答记录 | shingeki的博客</title><meta name="author" content="shingeki"><meta name="copyright" content="shingeki"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="记录我跟GPT和DeepSeek问答过程中我觉得很有启发性的一些对话。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GPT和DeepSeek的天才回答记录">
+<meta property="og:url" content="https://youzhoujimrliu.github.io/2025/04/14/GPT-DS-talks/index.html">
+<meta property="og:site_name" content="shingeki的博客">
+<meta property="og:description" content="记录我跟GPT和DeepSeek问答过程中我觉得很有启发性的一些对话。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250414205249327.jpg">
+<meta property="article:published_time" content="2025-04-14T12:47:18.000Z">
+<meta property="article:modified_time" content="2025-04-14T12:57:52.105Z">
+<meta property="article:author" content="shingeki">
+<meta property="article:tag" content="GPT">
+<meta property="article:tag" content="DeepSeek">
+<meta property="article:tag" content="ds">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250414205249327.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "GPT和DeepSeek的天才回答记录",
+  "url": "https://youzhoujimrliu.github.io/2025/04/14/GPT-DS-talks/",
+  "image": "https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250414205249327.jpg",
+  "datePublished": "2025-04-14T12:47:18.000Z",
+  "dateModified": "2025-04-14T12:57:52.105Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "shingeki",
+      "url": "https://youzhoujimrliu.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://youzhoujimrliu.github.io/2025/04/14/GPT-DS-talks/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: false,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'GPT和DeepSeek的天才回答记录',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="web_bg" style="background: linear-gradient(9deg, rgba(122,167,255,0.8487044475993523) 10%, rgba(107,9,121,0.7394607501203607) 65%, rgba(255,163,0,0.5209733551623774) 100%);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250402112624099.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250414205249327.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">shingeki的博客</span></a><a class="nav-page-title" href="/"><span class="site-name">GPT和DeepSeek的天才回答记录</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">GPT和DeepSeek的天才回答记录</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-04-14T12:47:18.000Z" title="发表于 2025-04-14 20:47:18">2025-04-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-04-14T12:57:52.105Z" title="更新于 2025-04-14 20:57:52">2025-04-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9D%82%E9%A1%B9/">杂项</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="一"><a href="#一" class="headerlink" title="一"></a>一</h1><p><strong>前文：</strong></p>
+<p>我要求GPT给我推荐前端里面传递数据的方法。情景是点击一个按钮，路由跳转到一个新页面。</p>
+<p>GPT给我推荐了两种方法：</p>
+<p>① 路由 query + JSON.stringify </p>
+<p>② 使用 Pinia&#x2F;Vuex 存储</p>
+<p><strong>我：</strong></p>
+<blockquote>
+<p>一般来说，我们软件开发中是要避免使用全局变量的，这里用pinia真的合适吗？当然这个数据比较大，用query肯定更不行。</p>
+</blockquote>
+<p><strong>GPT：</strong></p>
+<blockquote>
+<p>你问得非常好，这其实触及了<strong>前端状态管理设计的一个核心问题：全局状态是否合适？</strong></p>
+<hr>
+<h2 id="✅-先说结论："><a href="#✅-先说结论：" class="headerlink" title="✅ 先说结论："></a>✅ 先说结论：</h2><p>在你的这个场景里：<br> <strong>“临时保存从一个页面跳转到另一个页面的任务数据进行比较展示”</strong><br> 使用 <strong>Pinia</strong> 是<strong>合适</strong>的，甚至是推荐的方式，尽管它本质上是“全局状态”。</p>
+<p>但关键在于它是<strong>有作用范围的、可控的全局状态</strong>，不像传统意义上的“污染全局命名空间”的全局变量。</p>
+<hr>
+<h2 id="✅-为什么使用-Pinia-是合理的"><a href="#✅-为什么使用-Pinia-是合理的" class="headerlink" title="✅ 为什么使用 Pinia 是合理的"></a>✅ 为什么使用 Pinia 是合理的</h2><p>从“避免全局变量”的初衷来看，我们其实是想避免这些问题：</p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>可变性导致副作用</strong></td>
+<td>不受控的数据到处修改，难以维护</td>
+</tr>
+<tr>
+<td><strong>命名冲突</strong></td>
+<td>全局变量容易冲突</td>
+</tr>
+<tr>
+<td><strong>难以调试和测试</strong></td>
+<td>没有明确依赖关系和生命周期</td>
+</tr>
+</tbody></table>
+<p><strong>Pinia 正是为了解决这些问题而设计的状态管理工具：</strong></p>
+<ul>
+<li><strong>有作用域</strong>：虽然是全局 store，但可以模块化，使用时手动引入。</li>
+<li><strong>类型安全</strong>：和 TypeScript 深度集成，类型清晰。</li>
+<li><strong>生命周期受控</strong>：Compare 页面加载时取，用完可以 <code>store.$reset()</code>。</li>
+<li><strong>调试友好</strong>：可以通过 devtools 明确追踪状态变化。</li>
+</ul>
+<hr>
+<h2 id="✅-那我们可以怎么规避“全局变量带来的风险”？"><a href="#✅-那我们可以怎么规避“全局变量带来的风险”？" class="headerlink" title="✅ 那我们可以怎么规避“全局变量带来的风险”？"></a>✅ 那我们可以怎么规避“全局变量带来的风险”？</h2><p>如果你担心 store 永远挂着那堆数据，可以这样设计：</p>
+<figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Compare 页面加载时</span></span><br><span class="line"><span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (store.<span class="property">tasks</span>.<span class="property">length</span> === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 没有数据，引导用户回退</span></span><br><span class="line">    <span class="title class_">ElMessage</span>.<span class="title function_">warning</span>(<span class="string">&#x27;没有可对比的任务数据&#x27;</span>)</span><br><span class="line">    router.<span class="title function_">back</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Compare 页面卸载时清理</span></span><br><span class="line"><span class="title function_">onUnmounted</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  store.$reset()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="✅-替代方案对比"><a href="#✅-替代方案对比" class="headerlink" title="✅ 替代方案对比"></a>✅ 替代方案对比</h2><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Pinia/Vuex</code></td>
+<td>类型安全、响应式、调试方便，适合中大型项目</td>
+<td>有引入全局状态的感觉，需要管理生命周期</td>
+</tr>
+<tr>
+<td><code>Route query + JSON</code></td>
+<td>简单直接、显式传参</td>
+<td>只能传小数据、不可结构化（如函数、循环引用）</td>
+</tr>
+<tr>
+<td><code>sessionStorage</code> &#x2F; <code>localStorage</code></td>
+<td>可持久化</td>
+<td>不响应式，不推荐频繁交互场景</td>
+</tr>
+<tr>
+<td>事件总线（EventBus）</td>
+<td>一种轻量通信</td>
+<td>不推荐，维护复杂、非响应式</td>
+</tr>
+<tr>
+<td>父子组件 props 传递</td>
+<td>最符合 Vue 哲学</td>
+<td>只能在父子之间传，不适用于跳转页面</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="✅-总结一句话"><a href="#✅-总结一句话" class="headerlink" title="✅ 总结一句话"></a>✅ 总结一句话</h2><blockquote>
+<p><strong>Pinia 是“有纪律的全局状态”，只要你合理使用，它不是“坏的全局变量”，而是现代前端的好朋友。</strong></p>
+</blockquote>
+<p>如果你项目以后还有缓存用户数据、模型配置、历史记录、用户偏好设置这些“跨页面但短时”的状态需求，Pinia 会变得非常有用。</p>
+<p>需要我帮你写一个 <code>compareStore</code> 的具体代码结构也可以说一声～</p>
+</blockquote>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/GPT/">GPT</a><a class="post-meta__tags" href="/tags/DeepSeek/">DeepSeek</a><a class="post-meta__tags" href="/tags/ds/">ds</a></div><div class="post-share"><div class="social-share" data-image="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250414205249327.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2025/04/06/highlight-learning/" title="highlight.js在Vue3项目中使用的一些经验总结"><img class="cover" src="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250406215057251.jpg" onerror="onerror=null;src='https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250402112720227.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">highlight.js在Vue3项目中使用的一些经验总结</div></div><div class="info-2"><div class="info-item-1">highlight.js在Vue3项目中使用的一些经验总结</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250402112624099.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">shingeki</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">4</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/youzhoujiMrLiu"><i class="fab fa-github"></i><span>我的Github主页</span></a></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%80"><span class="toc-number">1.</span> <span class="toc-text">一</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E5%85%88%E8%AF%B4%E7%BB%93%E8%AE%BA%EF%BC%9A"><span class="toc-number">1.1.</span> <span class="toc-text">✅ 先说结论：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8-Pinia-%E6%98%AF%E5%90%88%E7%90%86%E7%9A%84"><span class="toc-number">1.2.</span> <span class="toc-text">✅ 为什么使用 Pinia 是合理的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E9%82%A3%E6%88%91%E4%BB%AC%E5%8F%AF%E4%BB%A5%E6%80%8E%E4%B9%88%E8%A7%84%E9%81%BF%E2%80%9C%E5%85%A8%E5%B1%80%E5%8F%98%E9%87%8F%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%A3%8E%E9%99%A9%E2%80%9D%EF%BC%9F"><span class="toc-number">1.3.</span> <span class="toc-text">✅ 那我们可以怎么规避“全局变量带来的风险”？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E6%9B%BF%E4%BB%A3%E6%96%B9%E6%A1%88%E5%AF%B9%E6%AF%94"><span class="toc-number">1.4.</span> <span class="toc-text">✅ 替代方案对比</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E2%9C%85-%E6%80%BB%E7%BB%93%E4%B8%80%E5%8F%A5%E8%AF%9D"><span class="toc-number">1.5.</span> <span class="toc-text">✅ 总结一句话</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/04/14/GPT-DS-talks/" title="GPT和DeepSeek的天才回答记录"><img src="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250414205249327.jpg" onerror="this.onerror=null;this.src='https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250402112720227.jpg'" alt="GPT和DeepSeek的天才回答记录"/></a><div class="content"><a class="title" href="/2025/04/14/GPT-DS-talks/" title="GPT和DeepSeek的天才回答记录">GPT和DeepSeek的天才回答记录</a><time datetime="2025-04-14T12:47:18.000Z" title="发表于 2025-04-14 20:47:18">2025-04-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/04/06/highlight-learning/" title="highlight.js在Vue3项目中使用的一些经验总结"><img src="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250406215057251.jpg" onerror="this.onerror=null;this.src='https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250402112720227.jpg'" alt="highlight.js在Vue3项目中使用的一些经验总结"/></a><div class="content"><a class="title" href="/2025/04/06/highlight-learning/" title="highlight.js在Vue3项目中使用的一些经验总结">highlight.js在Vue3项目中使用的一些经验总结</a><time datetime="2025-04-06T13:41:01.000Z" title="发表于 2025-04-06 21:41:01">2025-04-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/04/03/software-safety-reports/" title="软件安全课程报告汇总"><img src="https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250403232317140.jpg" onerror="this.onerror=null;this.src='https://shingeki-pic.oss-cn-nanjing.aliyuncs.com/img/20250402112720227.jpg'" alt="软件安全课程报告汇总"/></a><div class="content"><a class="title" href="/2025/04/03/software-safety-reports/" title="软件安全课程报告汇总">软件安全课程报告汇总</a><time datetime="2025-04-03T15:14:39.000Z" title="发表于 2025-04-03 23:14:39">2025-04-03</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent;"><div id="footer-wrap"><div class="copyright">&copy;2025 By shingeki</div><div class="footer_custom_text">Powered by Hexo & Butterfly.</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><script>(() => {
+  const loadMathjax = () => {
+    if (!window.MathJax) {
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          tags: 'none',
+        },
+        chtml: {
+          scale: 1.1
+        },
+        options: {
+          enableMenu: true,
+          renderActions: {
+            findScript: [10, doc => {
+              for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+                const display = !!node.type.match(/; *mode=display/)
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+                const text = document.createTextNode('')
+                node.parentNode.replaceChild(text, node)
+                math.start = {node: text, delim: '', n: 0}
+                math.end = {node: text, delim: '', n: 0}
+                doc.math.push(math)
+              }
+            }, '']
+          }
+        }
+      }
+
+      const script = document.createElement('script')
+      script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+      script.id = 'MathJax-script'
+      script.async = true
+      document.head.appendChild(script)
+    } else {
+      MathJax.startup.document.state(0)
+      MathJax.texReset()
+      MathJax.typesetPromise()
+    }
+  }
+
+  btf.addGlobalFn('encrypt', loadMathjax, 'mathjax')
+  window.pjax ? loadMathjax() : window.addEventListener('load', loadMathjax)
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>GPT和DeepSeek的天才回答记录</title>
+      <link href="/2025/04/14/GPT-DS-talks/"/>
+      <url>/2025/04/14/GPT-DS-talks/</url>
+      
+        <content type="html"><![CDATA[<h1 id="一"><a href="#一" class="headerlink" title="一"></a>一</h1><p><strong>前文：</strong></p><p>我要求GPT给我推荐前端里面传递数据的方法。情景是点击一个按钮，路由跳转到一个新页面。</p><p>GPT给我推荐了两种方法：</p><p>① 路由 query + JSON.stringify </p><p>② 使用 Pinia&#x2F;Vuex 存储</p><p><strong>我：</strong></p><blockquote><p>一般来说，我们软件开发中是要避免使用全局变量的，这里用pinia真的合适吗？当然这个数据比较大，用query肯定更不行。</p></blockquote><p><strong>GPT：</strong></p><blockquote><p>你问得非常好，这其实触及了<strong>前端状态管理设计的一个核心问题：全局状态是否合适？</strong></p><hr><h2 id="✅-先说结论："><a href="#✅-先说结论：" class="headerlink" title="✅ 先说结论："></a>✅ 先说结论：</h2><p>在你的这个场景里：<br> <strong>“临时保存从一个页面跳转到另一个页面的任务数据进行比较展示”</strong><br> 使用 <strong>Pinia</strong> 是<strong>合适</strong>的，甚至是推荐的方式，尽管它本质上是“全局状态”。</p><p>但关键在于它是<strong>有作用范围的、可控的全局状态</strong>，不像传统意义上的“污染全局命名空间”的全局变量。</p><hr><h2 id="✅-为什么使用-Pinia-是合理的"><a href="#✅-为什么使用-Pinia-是合理的" class="headerlink" title="✅ 为什么使用 Pinia 是合理的"></a>✅ 为什么使用 Pinia 是合理的</h2><p>从“避免全局变量”的初衷来看，我们其实是想避免这些问题：</p><table><thead><tr><th>问题</th><th>解释</th></tr></thead><tbody><tr><td><strong>可变性导致副作用</strong></td><td>不受控的数据到处修改，难以维护</td></tr><tr><td><strong>命名冲突</strong></td><td>全局变量容易冲突</td></tr><tr><td><strong>难以调试和测试</strong></td><td>没有明确依赖关系和生命周期</td></tr></tbody></table><p><strong>Pinia 正是为了解决这些问题而设计的状态管理工具：</strong></p><ul><li><strong>有作用域</strong>：虽然是全局 store，但可以模块化，使用时手动引入。</li><li><strong>类型安全</strong>：和 TypeScript 深度集成，类型清晰。</li><li><strong>生命周期受控</strong>：Compare 页面加载时取，用完可以 <code>store.$reset()</code>。</li><li><strong>调试友好</strong>：可以通过 devtools 明确追踪状态变化。</li></ul><hr><h2 id="✅-那我们可以怎么规避“全局变量带来的风险”？"><a href="#✅-那我们可以怎么规避“全局变量带来的风险”？" class="headerlink" title="✅ 那我们可以怎么规避“全局变量带来的风险”？"></a>✅ 那我们可以怎么规避“全局变量带来的风险”？</h2><p>如果你担心 store 永远挂着那堆数据，可以这样设计：</p><figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Compare 页面加载时</span></span><br><span class="line"><span class="title function_">onMounted</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (store.<span class="property">tasks</span>.<span class="property">length</span> === <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="comment">// 没有数据，引导用户回退</span></span><br><span class="line">    <span class="title class_">ElMessage</span>.<span class="title function_">warning</span>(<span class="string">&#x27;没有可对比的任务数据&#x27;</span>)</span><br><span class="line">    router.<span class="title function_">back</span>()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Compare 页面卸载时清理</span></span><br><span class="line"><span class="title function_">onUnmounted</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">  store.$reset()</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure><hr><h2 id="✅-替代方案对比"><a href="#✅-替代方案对比" class="headerlink" title="✅ 替代方案对比"></a>✅ 替代方案对比</h2><table><thead><tr><th>方案</th><th>优点</th><th>缺点</th></tr></thead><tbody><tr><td><code>Pinia/Vuex</code></td><td>类型安全、响应式、调试方便，适合中大型项目</td><td>有引入全局状态的感觉，需要管理生命周期</td></tr><tr><td><code>Route query + JSON</code></td><td>简单直接、显式传参</td><td>只能传小数据、不可结构化（如函数、循环引用）</td></tr><tr><td><code>sessionStorage</code> &#x2F; <code>localStorage</code></td><td>可持久化</td><td>不响应式，不推荐频繁交互场景</td></tr><tr><td>事件总线（EventBus）</td><td>一种轻量通信</td><td>不推荐，维护复杂、非响应式</td></tr><tr><td>父子组件 props 传递</td><td>最符合 Vue 哲学</td><td>只能在父子之间传，不适用于跳转页面</td></tr></tbody></table><hr><h2 id="✅-总结一句话"><a href="#✅-总结一句话" class="headerlink" title="✅ 总结一句话"></a>✅ 总结一句话</h2><blockquote><p><strong>Pinia 是“有纪律的全局状态”，只要你合理使用，它不是“坏的全局变量”，而是现代前端的好朋友。</strong></p></blockquote><p>如果你项目以后还有缓存用户数据、模型配置、历史记录、用户偏好设置这些“跨页面但短时”的状态需求，Pinia 会变得非常有用。</p><p>需要我帮你写一个 <code>compareStore</code> 的具体代码结构也可以说一声～</p></blockquote>]]></content>
+      
+      
+      <categories>
+          
+          <category> 杂项 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> GPT </tag>
+            
+            <tag> DeepSeek </tag>
+            
+            <tag> ds </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>highlight.js在Vue3项目中使用的一些经验总结</title>
       <link href="/2025/04/06/highlight-learning/"/>
       <url>/2025/04/06/highlight-learning/</url>
@@ -20,11 +49,11 @@
       
         <tags>
             
-            <tag> highlight.js </tag>
-            
             <tag> vue </tag>
             
             <tag> vue3 </tag>
+            
+            <tag> highlight.js </tag>
             
         </tags>
       
@@ -100,15 +129,15 @@
       
         <tags>
             
-            <tag> vue </tag>
-            
-            <tag> vue3 </tag>
-            
             <tag> 前端 </tag>
+            
+            <tag> vue </tag>
             
             <tag> element-plus </tag>
             
             <tag> element </tag>
+            
+            <tag> vue3 </tag>
             
         </tags>
       
